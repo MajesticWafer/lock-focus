@@ -43,7 +43,7 @@ function checkRestrictedStatus() {
     if (localStorage.getItem("warned") === "1") {
         restrictUserAccess();
     } else if (localStorage.getItem("prewarned") === "1") {     
-        
+        restrictUserAccess();
     } else {
         showWarning("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
 }
