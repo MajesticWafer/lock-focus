@@ -31,6 +31,8 @@ function showInitialWarning() {
 // Function to show the secondary warning
 function showSecondaryWarning() {
     alert("You have been restricted from answering this form. Reason: potential cheating.");
+    // Restrict user from accessing the form
+    document.getElementById('googleForm').style.display = 'none';
 }
 
 // Function to check if warned=1 is stored and act accordingly
