@@ -23,29 +23,59 @@
 <iframe id="googleForm" src="https://docs.google.com/forms/d/e/1FAIpQLSdQ4Hcv50emaXa2ua2EbDdNgMUOSvXXf_BbK8lJ02eA6iMhEw/viewform?embedded=true" frameborder="0" scrolling="no"></iframe>
 
 <script>
-// Variable to track if the user has been warned
-let warned = false;
+// Function to show the initial warning
+function showInitialWarning() {
+    alert("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
+}
+
+// Function to show the secondary warning
+function showSecondaryWarning() {
+    alert("You have been restricted from answering this form. Reason: potential cheating.");
+}
+
+// Function to check if warned=1 is stored and act accordingly
+function checkWarnedStatus() {
+    if (localStorage.getItem("warned") === "1") {
+        showSecondaryWarning();
+    } else {
+        showInitialWarning();
+    }
+}
+
+// Event listener for page load
+window.addEventListener("load", function() {
+    checkWarnedStatus();
+});
 
 // Function to handle visibility change
 function handleVisibilityChange() {
     if (document.hidden) {
         // Tab unfocused
-        if (!warned) {
-            // Show initial warning
-            alert("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
-            warned = true;
+        if (localStorage.getItem("warned") !== "1") {
+            // Show initial warning if not previously warned
+            showInitialWarning();
         }
     } else {
         // Tab focused again
-        if (warned) {
-            // Show secondary warning
-            alert("You have been restricted from answering this form. Reason: potential cheating.");
+        if (localStorage.getItem("warned") === "1") {
+            // Show secondary warning if previously warned
+            showSecondaryWarning();
         }
     }
 }
 
 // Event listener for tab visibility change
 document.addEventListener("visibilitychange", handleVisibilityChange, false);
+</script>
+
+<script>
+// Check if the user is restricted and reload the page if necessary
+if (localStorage.getItem("warned") === "1") {
+    // Clear the restriction status
+    localStorage.removeItem("warned");
+    // Reload the page
+    location.reload();
+}
 </script>
 
 </body>
