@@ -3,37 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Locked Google Form</title>
+<title>Embedded Google Form</title>
 <style>
     body, html {
         margin: 0;
         padding: 0;
-        overflow: hidden;
+        height: 100%;
     }
     iframe {
         width: 100%;
-        height: 100vh;
-        overflow-y: auto;
+        height: 100%;
         border: none;
     }
 </style>
 </head>
 <body>
 
-<iframe id="googleForm" src="https://docs.google.com/forms/d/e/1FAIpQLSdQ4Hcv50emaXa2ua2EbDdNgMUOSvXXf_BbK8lJ02eA6iMhEw/viewform?embedded=true" width="640" height="530" marginheight="0" marginwidth="0" frameborder="0" scrolling="no">Loading...</iframe>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdQ4Hcv50emaXa2ua2EbDdNgMUOSvXXf_BbK8lJ02eA6iMhEw/viewform?embedded=true" id="embeddedForm"></iframe>
 
 <script>
-// Refresh iframe and show alert if unfocused
-function handleVisibilityChange() {
-    if (document.hidden) {
-        // Tab unfocused, refresh iframe and show alert
-        document.getElementById('googleForm').src += '';
-        alert("This tab was unfocused. Please do not leave this page for any reason!");
-    }
-}
+    // Function to prevent navigation away from the page
+    function preventNavigation() {
+        window.addEventListener("beforeunload", function (e) {
+            var confirmationMessage = "Are you sure you want to leave?";
 
-// Event listener for tab visibility change
-document.addEventListener("visibilitychange", handleVisibilityChange, false);
+            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        });
+    }
+
+    // Function to allow navigation away from the page
+    function allowNavigation() {
+        window.removeEventListener("beforeunload", function (e) {
+            var confirmationMessage = "Are you sure you want to leave?";
+
+            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        });
+    }
+
+    // Lock user into tab for 1 minute
+    setTimeout(function() {
+        allowNavigation();
+    }, 60000);
+
+    // Call preventNavigation function
+    preventNavigation();
 </script>
 
 </body>
