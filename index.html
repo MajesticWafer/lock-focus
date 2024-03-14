@@ -3,76 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Embedded Google Form</title>
+<title>Locked Google Form</title>
 <style>
     body, html {
         margin: 0;
         padding: 0;
-        height: 100%;
-    }
-    #overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    #formContainer {
-        width: 80%;
-        height: 80%;
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
+        overflow: hidden;
     }
     iframe {
         width: 100%;
-        height: 100%;
+        height: 100vh;
+        overflow-y: auto;
         border: none;
     }
 </style>
 </head>
 <body>
 
-<div id="overlay">
-    <div id="formContainer">
-        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdQ4Hcv50emaXa2ua2EbDdNgMUOSvXXf_BbK8lJ02eA6iMhEw/viewform?embedded=true" id="embeddedForm"></iframe>
-    </div>
-</div>
+<iframe id="googleForm" src="https://docs.google.com/forms/d/e/1FAIpQLSdQ4Hcv50emaXa2ua2EbDdNgMUOSvXXf_BbK8lJ02eA6iMhEw/viewform?embedded=true" frameborder="0" scrolling="no"></iframe>
 
 <script>
-    // Lock user into tab for 1 minute
-    setTimeout(function() {
-        allowNavigation();
-    }, 60000);
+// Variable to track if the user has been warned
+let warned = false;
 
-    // Function to prevent navigation away from the page
-    function preventNavigation() {
-        window.addEventListener("beforeunload", function (e) {
-            var confirmationMessage = "Are you sure you want to leave?";
-
-            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-        });
+// Function to handle visibility change
+function handleVisibilityChange() {
+    if (document.hidden) {
+        // Tab unfocused
+        if (!warned) {
+            // Show initial warning
+            alert("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
+            warned = true;
+        }
+    } else {
+        // Tab focused again
+        if (warned) {
+            // Show secondary warning
+            alert("You have been restricted from answering this form. Reason: potential cheating.");
+        }
     }
+}
 
-    // Function to allow navigation away from the page
-    function allowNavigation() {
-        window.removeEventListener("beforeunload", function (e) {
-            var confirmationMessage = "Are you sure you want to leave?";
-
-            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-        });
-        document.getElementById("overlay").style.display = "none";
-    }
-
-    // Call preventNavigation function
-    preventNavigation();
+// Event listener for tab visibility change
+document.addEventListener("visibilitychange", handleVisibilityChange, false);
 </script>
 
 </body>
