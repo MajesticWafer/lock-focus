@@ -25,6 +25,7 @@
 <script>
 // Function to show the warning
 function showWarning(message) {
+    localStorage.setItem("prewarned", "1");
     alert(message);
 }
 
@@ -33,16 +34,18 @@ function restrictUserAccess() {
     showWarning("You have been restricted from answering this form. Reason: potential cheating.");
     // Hide the Google Form
     document.getElementById('googleForm').style.display = 'none';
+    // Save the warned status to local storage
+    localStorage.setItem("warned", "1");
 }
 
 // Function to check if user is restricted
 function checkRestrictedStatus() {
     if (localStorage.getItem("warned") === "1") {
         restrictUserAccess();
+    } else if (localStorage.getItem("prewarned") === "1") {     
+        
     } else {
-        // Show initial warning
         showWarning("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
-    }
 }
 
 // Check if the user is restricted upon page load
@@ -60,8 +63,6 @@ document.addEventListener("visibilitychange", function() {
 
 // Check if the user is restricted and reload the page if necessary
 if (localStorage.getItem("warned") === "1") {
-    // Clear the restriction status
-    localStorage.removeItem("warned");
     // Reload the page
     location.reload();
 }
