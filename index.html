@@ -23,51 +23,53 @@
 <iframe id="googleForm" src="https://docs.google.com/forms/d/e/1FAIpQLSdQ4Hcv50emaXa2ua2EbDdNgMUOSvXXf_BbK8lJ02eA6iMhEw/viewform?embedded=true" frameborder="0" scrolling="no"></iframe>
 
 <script>
-// Function to show the initial warning
-function showInitialWarning() {
-    alert("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
+// Function to show the warning
+function showWarning(message) {
+    alert(message);
 }
 
-// Function to show the secondary warning
-function showSecondaryWarning() {
-    alert("You have been restricted from answering this form. Reason: potential cheating.");
-    // Restrict user from accessing the form
+// Function to restrict user access and show warning
+function restrictUserAccess() {
+    showWarning("You have been restricted from answering this form. Reason: potential cheating.");
+    // Hide the Google Form
     document.getElementById('googleForm').style.display = 'none';
 }
 
-// Function to check if warned=1 is stored and act accordingly
-function checkWarnedStatus() {
+// Function to check if user is restricted
+function checkRestrictedStatus() {
     if (localStorage.getItem("warned") === "1") {
-        showSecondaryWarning();
+        restrictUserAccess();
     } else {
-        showInitialWarning();
+        // Show initial warning
+        showWarning("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
     }
 }
 
-// Event listener for page load
-window.addEventListener("load", function() {
-    checkWarnedStatus();
-});
-
-// Function to handle visibility change
+// Function to handle tab visibility change
 function handleVisibilityChange() {
     if (document.hidden) {
         // Tab unfocused
         if (localStorage.getItem("warned") !== "1") {
-            // Show initial warning if not previously warned
-            showInitialWarning();
+            // Show warning if not previously warned
+            showWarning("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
         }
     } else {
         // Tab focused again
         if (localStorage.getItem("warned") === "1") {
             // Show secondary warning if previously warned
-            showSecondaryWarning();
+            restrictUserAccess();
         }
     }
 }
 
 // Event listener for tab visibility change
-document.addEventListener("visibilitychange", handleVisibilityChange, false);
+document.addEventListener("visibilitychange", handleVisibilityChange);
+
+// Check if the user is restricted upon page load
+window.onload = function() {
+    checkRestrictedStatus();
+};
+
 </script>
 
 <script>
