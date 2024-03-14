@@ -45,34 +45,19 @@ function checkRestrictedStatus() {
     }
 }
 
-// Function to handle tab visibility change
-function handleVisibilityChange() {
-    if (document.hidden) {
-        // Tab unfocused
-        if (localStorage.getItem("warned") !== "1") {
-            // Show warning if not previously warned
-            showWarning("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
-        }
-    } else {
-        // Tab focused again
-        if (localStorage.getItem("warned") === "1") {
-            // Show secondary warning if previously warned
-            restrictUserAccess();
-        }
-    }
-}
-
-// Event listener for tab visibility change
-document.addEventListener("visibilitychange", handleVisibilityChange);
-
 // Check if the user is restricted upon page load
 window.onload = function() {
     checkRestrictedStatus();
 };
 
-</script>
+// Event listener for tab visibility change
+document.addEventListener("visibilitychange", function() {
+    if (document.hidden && localStorage.getItem("warned") !== "1") {
+        // Show warning if tab is hidden and user is not previously warned
+        showWarning("Do not leave this page, as cheating is blacklisted in this form. If you proceed to leave, you will not be able to participate in the trivia.");
+    }
+});
 
-<script>
 // Check if the user is restricted and reload the page if necessary
 if (localStorage.getItem("warned") === "1") {
     // Clear the restriction status
